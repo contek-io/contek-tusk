@@ -1,6 +1,6 @@
 # Tusk Clickhouse Metric Writer
 
-```contek-tusk``` is a metric writer built upon clickhouse.
+```contek-tusk``` is a metric writer built upon Clickhouse.
 
 ### 1. Connection Initialization
 
