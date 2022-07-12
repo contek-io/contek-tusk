@@ -40,7 +40,7 @@ class TuskHandler(Handler):
         error_column = config.get_error_column()
         if error_column is not None:
             exc = record.exc_info
-            error = exc[0].__name__ if exc is not None else ''
+            error = exc[0].__name__ if exc else ''
             key_values[error_column] = error
 
         message_column = config.get_message_column()
@@ -51,7 +51,7 @@ class TuskHandler(Handler):
         stacktrace_column = config.get_stacktrace_column()
         if stacktrace_column is not None:
             stacktrace = ''
-            if record.exc_info is not None:
+            if record.exc_info:
                 lines = traceback.format_exception(*record.exc_info)
                 stacktrace = ''.join(lines)
             key_values[stacktrace_column] = stacktrace

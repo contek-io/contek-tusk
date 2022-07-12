@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='contek-tusk',
-    version='1.1',
+    version='1.4',
     description='Tusk for Clickhouse metric writing',
     long_description=long_description,
     long_description_content_type="text/markdown",
