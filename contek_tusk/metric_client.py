@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import multiprocessing
 from typing import Optional, Dict
 
 from clickhouse_driver import Client
@@ -18,6 +19,7 @@ class MetricClient:
 
     def __init__(self, client: Client):
         self._client = client
+        self._lock = multiprocessing.Lock()
 
     @classmethod
     def create(
@@ -44,22 +46,34 @@ class MetricClient:
         rows = df.shape[0]
         if rows < 1:
             return
+
+        self._lock.acquire()
         try:
             self._client.insert_dataframe(query, df)
         except Error:
             logger.exception(
                 f"Failed to flush metric data into table \"{data.get_table().get_full_name()}\"."
             )
+        finally:
+            self._lock.release()
 
     def describe(self, table: Table) -> Optional[Schema]:
         full_table_name = table.get_full_name()
         query = f"DESCRIBE TABLE {full_table_name}"
+
+        self._lock.acquire()
+        df = None
         try:
             df = self._client.query_dataframe(query)
         except Error:
             logger.exception(
                 f"Failed to describe table \"{table.get_full_name()}\".")
-            return None
+        finally:
+            self._lock.release()
+
+        if df is None:
+            return
+
         result: Dict[str, str] = {}
         for (index, row) in df.iterrows():
             column_name = row.get('name')
