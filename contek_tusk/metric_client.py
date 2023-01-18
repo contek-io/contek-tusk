@@ -78,5 +78,13 @@ class MetricClient:
         for (index, row) in df.iterrows():
             column_name = row.get('name')
             column_type = row.get('type')
+            if column_type.endswith(')'):
+                bracket_start = column_type.index('(')
+                type_or_modifier = column_type[0:bracket_start]
+                if type_or_modifier == 'LowCardinality' or type_or_modifier == 'Nullable':
+                    column_type = column_type[bracket_start + 1:-1]
+                else:
+                    column_type = type_or_modifier
+
             result[column_name] = column_type
         return Schema(result)
