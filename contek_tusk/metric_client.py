@@ -49,7 +49,10 @@ class MetricClient:
 
         self._lock.acquire()
         try:
-            self._client.insert_dataframe(query, df)
+            num_of_rows_inserted = self._client.insert_dataframe(query, df)
+            if num_of_rows_inserted < rows:
+                raise ValueError(f"Expect {num_of_rows_inserted} rows inserted, "
+                                 f"actual {num_of_rows_inserted} rows inserted")
         except Error:
             logger.exception(
                 f"Failed to flush metric data into table \"{data.get_table().get_full_name()}\"."
