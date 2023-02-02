@@ -1,9 +1,12 @@
 from threading import Lock
 from typing import Optional, Dict
 
+import logging
 from contek_tusk.env_utils import get_env_tag
 from contek_tusk.schema import Schema
 from contek_tusk.schema_provider import SchemaProvider
+
+logger = logging.getLogger(__name__)
 
 
 class EnvTagsCache:
@@ -22,6 +25,7 @@ class EnvTagsCache:
 
             schema = self._schema_provider.get_schema()
             if schema is None:
+                logger.error("Cannot fetch schema")
                 return None
 
             self._cache = EnvTagsCache._get_tags_from_env(schema)
