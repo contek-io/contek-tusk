@@ -66,6 +66,7 @@ class Metric:
         )
 
     def write(self, key_values: Dict[str, any]) -> None:
+        key_values = key_values.copy() # Don't modify input inplace
         time_column = self._time_column_cache.get()
         if time_column is not None:
             now = datetime.utcnow()
