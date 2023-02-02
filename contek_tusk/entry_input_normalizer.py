@@ -43,7 +43,7 @@ class EntryInputNormalizer:
             return value
 
         column_type = schema.get_column_type(column_name)
-        if type is None:
+        if column_type is None:
             raise RuntimeError(
                 f"Column \"{column_name}\" is not defined in the schema")
 
