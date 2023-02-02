@@ -51,22 +51,19 @@ class EntryInputNormalizer:
 
     @staticmethod
     def _normalize_for_type(value: any, column_type: str) -> any:
-        value_type = type(value)
         if column_type == 'String':
-            if value_type is not str:
-                return str(value)
-
-        if column_type.startswith('DateTime'):
-            if value_type == float:
+            value = str(value)
+        elif column_type.startswith('DateTime'):
+            if isinstance(value, float):
                 return datetime.datetime.utcfromtimestamp(value)
-
-        if column_type.startswith('Int') or column_type.startswith('UInt'):
-            if value_type == str or value_type == float:
-                return int(value)
-
-        if column_type.startswith('Float'):
-            if value_type == str or value_type == int:
-                return float(value)
+            elif isinstance(value, (datetime.datetime, int)):
+                pass
+            else:
+                raise ValueError(f"Invalid datetime value {value}")
+        elif column_type.startswith('Int') or column_type.startswith('UInt'):
+            value = int(value)
+        elif column_type.startswith('Float'):
+            value = float(value)
 
         return value
 
