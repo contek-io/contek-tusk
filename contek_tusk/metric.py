@@ -75,7 +75,7 @@ class Metric:
         env_tags = self._env_tags_cache.get()
         if env_tags is not None:
             for (key, value) in env_tags.items():
-                env_tags.setdefault(key, value)
+                key_values.setdefault(key, value)
 
         entry_row = self._entry_input_normalizer.normalize(key_values)
         if entry_row is None:
